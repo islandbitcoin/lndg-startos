@@ -6,5 +6,5 @@ RUN pip install -r requirements.txt
 RUN pip install supervisor whitenoise
 EXPOSE 8889
 ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
-RUN chmod a+x /app/docker_entrypoint.sh
+RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]

@@ -1,93 +1,29 @@
+compat: v0
 id: lndg
 title: "LNDg"
-version: 0.3.0
-release-notes: "Initial push for EmbassyOS v0.3.0"
-license: mit
-wrapper-repo: "https://github.com/cryptosharks131/embassyos-lndg-wrapper"
-upstream-repo: "https://github.com/cryptosharks131/embassyos-lndg-wrapper"
-support-site: "https://github.com/cryptosharks131/lndg"
-marketing-site: "https://github.com/cryptosharks131/lndg"
-build: ["make"]
-min-os-version: "0.3.0"
+version: 0.2.0
+release-notes: "Initial push for EmbassyOS v0.2.0"
 description:
   short: Lite GUI interface for LND
   long: |
     Lite GUI web interface to analyze lnd data and leverage the backend database for automation tools around rebalancing and other basic maintenance tasks.
+has-instructions: true
+os-version-required: ">=0.2.12"
+os-version-recommended: ">=0.2.12"
 ports:
   - internal: 8889
-    tor: 8889
-assets:
-  license: LICENSE
-  instructions: README.md
-  docker-images: image.tar
-main:
-  type: docker
-  image: main
-  entrypoint: "docker_entrypoint.sh"
-  args: []
-  mounts:
-    main: /root
-health-checks: {}
+    tor: 80
+    lan: standard
+image:
+  type: tar
+mount: /root
+public: public
+shared: shared
+hidden-service-version: v3
 dependencies:
   lnd:
-    version: ">=0.12.1"
-    description: "The LND node you wish to use with LNDg"
-    critical: false
-    requirement:
-      type: required
-    config: ~
-volumes:
-  main:
-    type: data
-  compat:
-    type: assets
-  lnd:
-    type: pointer
-    package-id: lnd
-    volume-id: main
-    path: /public
-    readonly: true
-interfaces:
-  main:
-    name: Browser Interface
-    description: The main LNDg browser interface
-    tor-config:
-      port-mapping:
-        8889: "80"
-    lan-config:
-      8889:
-        ssl: true
-        mapping: 443
-    ui: true
-    protocols:
-      - tcp
-      - http
-backup:
-  create:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args:
-      - duplicity
-      - create
-      - /mnt/backup
-      - /root/data
-    mounts:
-      BACKUP: /mnt/backup
-      main: /root/data
-    io-format: yaml
-  restore:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args:
-      - duplicity
-      - restore
-      - /mnt/backup
-      - /root/data
-    mounts:
-      BACKUP: /mnt/backup
-      main: /root/data
-    io-format: yaml
+    version: ">=0.12.1 <0.14.0"
+    decription: The LNDg is a tool for LND
+    mount-public: true
+    mount-shared: true
+    config: []

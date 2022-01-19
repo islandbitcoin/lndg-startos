@@ -1,29 +1,133 @@
-compat: v0
+
 id: lndg
 title: "LNDg"
-version: 0.2.0
-release-notes: "Initial push for EmbassyOS v0.2.0"
+version: 1.0.1
+release-notes: "Initial push for EmbassyOS v0.3.0 - Suggested Peers Includes Savings By Volume (the amount you could have saved by peering directly with this node divided by total amount routed through this peer). Also adds Cost To as a value in the routes page of a payment transaction.
+Rebalance attempts will no longer be submitted when (your fee * max cost) < peer fee as this scenario could never be successful.
+Fixes an edge case in the channels data when uptime of a channel is 0 and fee rates never get set.
+View keysends page - you can now click on Keysends in the header of the invoices table to to view received keysend payments.
+Autopilot mode - an experimental mode that acts upon the suggestions you would see on the Suggest AR Actions page in order to activate the Enable AR and Disable AR on your behalf, based on a channel's current liquidity and prior flow pattern."
+license: mit
+wrapper-repo: "https://github.com/Start9Labs/lndg-wrapper"
+upstream-repo: "https://github.com/cryptosharks131/embassyos-lndg-wrapper"
+support-site: "https://t.me/+cPi5nRCg_1g1MTNh"
+marketing-site: "https://github.com/cryptosharks131/embassyos-lndg-wrapper"
+build: ["make"]
+min-os-version: "0.3.0"
 description:
-  short: Lite GUI interface for LND
-  long: |
-    Lite GUI web interface to analyze lnd data and leverage the backend database for automation tools around rebalancing and other basic maintenance tasks.
-has-instructions: true
-os-version-required: ">=0.2.12"
-os-version-recommended: ">=0.2.12"
-ports:
-  - internal: 8889
-    tor: 80
-    lan: standard
-image:
-  type: tar
-mount: /root
-public: public
-shared: shared
-hidden-service-version: v3
+  short: "Lite GUI interface for LND"
+  long: "Lite GUI web interface to analyze lnd data and leverage the backend database for automation tools around rebalancing and other basic maintenance tasks."
+assets:
+  license: LICENSE
+  icon: icon.png
+  instructions: instructions.md
+  docker-images: image.tar
+main:
+  type: docker
+  image: main
+  entrypoint: docker_entrypoint.sh
+  args: []
+  mounts:
+    main: /root
+    lnd: /mnt/lnd
+  io-format: yaml
+health-checks:
+  main:
+    name: Main
+    description: Activates once your LNDg UI is ready to visit
+    type: docker
+    image: main
+    entrypoint: sh
+    args: ["-c", "curl lndg.embassy:8889 || exit 1"]
+    io-format: yaml
+    inject: true
+config:
+  get:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: compat
+    args: 
+      - config
+      - get
+      - /root
+      - /mnt/assets/config_spec.yaml
+    mounts:
+      main: /root
+      compat: /mnt/assets
+    io-format: yaml
+  set:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: compat
+    args:
+      - config
+      - set
+      - lndg
+      - /root
+      - /mnt/assets/config_rules.yaml
+    mounts:
+      main: /root
+      compat: /mnt/assets
+    io-format: yaml
+properties:
+  type: docker
+  image: compat
+  system: true
+  entrypoint: compat
+  args:
+    - properties
+    - /root
+  mounts:
+    main: /root
+  io-format: yaml
+volumes:
+  main:
+    type: data
+  compat:
+    type: assets
+  lnd:
+    type: pointer
+    package-id: lnd
+    volume-id: main
+    path: /public
+    readonly: true
+interfaces:
+  main:
+    name: Network Interface
+    description: The main LNDg browser interface
+    tor-config:
+      port-mapping:
+        8889: "8889"
+    lan-config:
+      8889:
+        ssl: false
+        mapping: 8889
+    ui: true
+    protocols:
+      - tcp
+      - http 
 dependencies:
   lnd:
     version: ">=0.12.1 <0.14.0"
-    decription: The LNDg is a tool for LND
-    mount-public: true
-    mount-shared: true
-    config: []
+    description: The LNDg is an GUI tool for LND
+    critical: false
+    requirement:
+      type: required
+    config: ~
+backup:
+  create:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: compat
+    args:
+      - duplicity
+      - create
+      - /mnt/backup
+      - /root/data
+    mounts:
+      BACKUP: /mnt/backup
+      main: /root/data
+    io-format: yaml

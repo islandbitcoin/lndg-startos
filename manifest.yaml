@@ -4,23 +4,18 @@ version: 1.0.3.0
 release-notes: "Initial release of a LNDg for EmbassyOS v0.3.0"
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/lndg-wrapper"
-upstream-repo: "https://github.com/cryptosharks131/lndg.git
+upstream-repo: "https://github.com/cryptosharks131/lndg"
 support-site: "https://t.me/+cPi5nRCg_1g1MTNh"
 marketing-site: "https://twitter.com/cryptosharks131"
 build: ["make"]
 min-os-version: "0.3.0"
 description:
   short: "Lite GUI interface for LND"
-  long: "Lite GUI web interface to analyze lnd data and leverage the backend database for automation tools around rebalancing and other basic maintenance tasks. 
-  Suggested Peers Includes Savings By Volume (the amount you could have saved by peering directly with this node divided by total amount routed through this peer). Also adds Cost To as a value in the routes page of a payment transaction.
-  Rebalance attempts will no longer be submitted when (your fee * max cost) < peer fee as this scenario could never be successful.
-  Fixes an edge case in the channels data when uptime of a channel is 0 and fee rates never get set.
-  View keysends page - you can now click on Keysends in the header of the invoices table to to view received keysend payments.
-  Autopilot mode - an experimental mode that acts upon the suggestions you would see on the Suggest AR Actions page in order to activate the Enable AR and Disable AR on your behalf, based on a channel's current liquidity and prior flow pattern."
+  long: "Lite GUI web interface to analyze lnd data and leverage the backend database for automation tools around rebalancing and other basic maintenance tasks."
 assets:
   license: LICENSE
   icon: icon.png
-  instructions: instructions.md
+  instructions: docs/instructions.md
   docker-images: image.tar
 main:
   type: docker
@@ -33,36 +28,36 @@ main:
     lnd: /mnt/lnd
   io-format: yaml
 health-checks: {}
-config:
-  get:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args: 
-      - config
-      - get
-      - /root
-      - /mnt/assets/config_spec.yaml
-    mounts:
-      main: /root
-      compat: /mnt/assets
-    io-format: yaml
-  set:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args:
-      - config
-      - set
-      - lndg
-      - /root
-      - /mnt/assets/config_rules.yaml
-    mounts:
-      main: /root
-      compat: /mnt/assets
-    io-format: yaml
+config: ~
+  # get:
+  #   type: docker
+  #   image: compat
+  #   system: true
+  #   entrypoint: compat
+  #   args: 
+  #     - config
+  #     - get
+  #     - /root
+  #     - /mnt/assets/config_spec.yaml
+  #   mounts:
+  #     main: /root
+  #     compat: /mnt/assets
+  #   io-format: yaml
+  # set:
+  #   type: docker
+  #   image: compat
+  #   system: true
+  #   entrypoint: compat
+  #   args:
+  #     - config
+  #     - set
+  #     - lndg
+  #     - /root
+  #     - /mnt/assets/config_rules.yaml
+  #   mounts:
+  #     main: /root
+  #     compat: /mnt/assets
+  #   io-format: yaml
 properties:
   type: docker
   image: compat
@@ -126,17 +121,17 @@ backup:
       BACKUP: /mnt/backup
       main: /root/data
     io-format: yaml
-restore:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args:
-      - duplicity
-      - restore
-      - /mnt/backup
-      - /root/data
-    mounts:
-      BACKUP: /mnt/backup
-      main: /root/data
-    io-format: yaml
+  restore:
+      type: docker
+      image: compat
+      system: true
+      entrypoint: compat
+      args:
+        - duplicity
+        - restore
+        - /mnt/backup
+        - /root/data
+      mounts:
+        BACKUP: /mnt/backup
+        main: /root/data
+      io-format: yaml

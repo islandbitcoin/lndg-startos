@@ -28,36 +28,36 @@ main:
     lnd: /mnt/lnd
   io-format: yaml
 health-checks: {}
-config: ~
-  # get:
-  #   type: docker
-  #   image: compat
-  #   system: true
-  #   entrypoint: compat
-  #   args: 
-  #     - config
-  #     - get
-  #     - /root
-  #     - /mnt/assets/config_spec.yaml
-  #   mounts:
-  #     main: /root
-  #     compat: /mnt/assets
-  #   io-format: yaml
-  # set:
-  #   type: docker
-  #   image: compat
-  #   system: true
-  #   entrypoint: compat
-  #   args:
-  #     - config
-  #     - set
-  #     - lndg
-  #     - /root
-  #     - /mnt/assets/config_rules.yaml
-  #   mounts:
-  #     main: /root
-  #     compat: /mnt/assets
-  #   io-format: yaml
+config:
+  get:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: compat
+    args: 
+      - config
+      - get
+      - /root
+      - /mnt/assets/config_spec.yaml
+    mounts:
+      main: /root
+      compat: /mnt/assets
+    io-format: yaml
+  set:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: compat
+    args:
+      - config
+      - set
+      - lndg
+      - /root
+      - /mnt/assets/config_rules.yaml
+    mounts:
+      main: /root
+      compat: /mnt/assets
+    io-format: yaml
 properties:
   type: docker
   image: compat

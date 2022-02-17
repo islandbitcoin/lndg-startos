@@ -2,8 +2,8 @@ FROM --platform=linux/arm64/v8 python:3
 
 # Docker setup for LNDg
 ENV PYTHONUNBUFFERED 1
-COPY . src/
-WORKDIR /src/lndg
+COPY . /
+WORKDIR /lndg
 RUN pip install -r requirements.txt
 RUN pip install supervisor whitenoise
 

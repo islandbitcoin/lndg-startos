@@ -12,4 +12,4 @@ echo '    masked: false' >> /root/lndg/start9/stats.yaml
 echo '    qr: false' >> /root/lndg/start9/stats.yaml
 
 #running this will start the LNDg docker and expose the tool at port 8889
-docker-compose up -d
+lndg/docker-compose up -d

@@ -23,41 +23,12 @@ main:
   entrypoint: docker_entrypoint.sh
   args: []
   mounts:
-    main: /root
+    main: /src/lndg
     compat: /mnt/assets
     lnd: /mnt/lnd
   io-format: yaml
 health-checks: {}
-config:
-  get:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args: 
-      - config
-      - get
-      - /root
-      - /mnt/assets/config_spec.yaml
-    mounts:
-      main: /root
-      compat: /mnt/assets
-    io-format: yaml
-  set:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args:
-      - config
-      - set
-      - lndg
-      - /root
-      - /mnt/assets/config_rules.yaml
-    mounts:
-      main: /root
-      compat: /mnt/assets
-    io-format: yaml
+config: ~
 properties:
   type: docker
   image: compat
@@ -65,15 +36,15 @@ properties:
   entrypoint: compat
   args:
     - properties
-    - /root
+    - /src/lndg
   mounts:
-    main: /root
+    main: /src/lndg
   io-format: yaml
 dependencies:
   lnd:
     version: ">=0.12.1 <0.14.0"
     description: The LNDg is an GUI tool for LND
-    critical: false
+    critical: true
     requirement:
       type: required
     config: ~
@@ -116,10 +87,10 @@ backup:
       - duplicity
       - create
       - /mnt/backup
-      - /root/data
+      - /src/lndg/data
     mounts:
       BACKUP: /mnt/backup
-      main: /root/data
+      main: /src/lndg/data
     io-format: yaml
   restore:
       type: docker
@@ -130,8 +101,8 @@ backup:
         - duplicity
         - restore
         - /mnt/backup
-        - /root/data
+        - /src/lndg/data
       mounts:
         BACKUP: /mnt/backup
-        main: /root/data
+        main: /src/lndg/data
       io-format: yaml

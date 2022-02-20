@@ -1,0 +1,11 @@
+services:
+  lndg:
+    build: .
+    volumes:
+      - /mnt/lnd:/root/.lnd:ro
+      - /src/lndg/lndg/data:/lndg/data:rw
+    command:
+      - sh
+      - -c
+      - python initialize.py -net 'mainnet' -server '127.0.0.1:10009' -d && supervisord && python manage.py runserver 0.0.0.0:8889
+    network_mode: "host"

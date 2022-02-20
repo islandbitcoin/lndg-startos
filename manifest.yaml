@@ -23,7 +23,7 @@ main:
   entrypoint: docker_entrypoint.sh
   args: []
   mounts:
-    main: /src/lndg
+    main: /root
     compat: /mnt/assets
     lnd: /mnt/lnd
   io-format: yaml
@@ -36,9 +36,9 @@ properties:
   entrypoint: compat
   args:
     - properties
-    - /src/lndg
+    - /root
   mounts:
-    main: /src/lndg
+    main: /root
   io-format: yaml
 dependencies:
   lnd:
@@ -87,10 +87,10 @@ backup:
       - duplicity
       - create
       - /mnt/backup
-      - /src/lndg/data
+      - /root/data
     mounts:
       BACKUP: /mnt/backup
-      main: /src/lndg/data
+      main: /root/data
     io-format: yaml
   restore:
       type: docker
@@ -101,8 +101,8 @@ backup:
         - duplicity
         - restore
         - /mnt/backup
-        - /src/lndg/data
+        - /root/data
       mounts:
         BACKUP: /mnt/backup
-        main: /src/lndg/data
+        main: /root/data
       io-format: yaml

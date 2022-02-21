@@ -2,7 +2,7 @@ services:
   lndg:
     build: .
     volumes:
-      - /mnt/lnd:/root/.lnd:ro
+      - /public/lnd:/root/.lnd:ro
       - /src/lndg/lndg/data:/lndg/data:rw
     command:
       - sh

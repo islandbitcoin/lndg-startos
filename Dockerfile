@@ -1,16 +1,15 @@
-FROM --platform=linux/arm64/v8 python:3-bullseye
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+FROM --platform=linux/arm64/v8 ubuntu:focal
+RUN apt-get update -y \
+    && apt-get upgrade -y\
+    && apt-get install -y \
+    python3-pip \
+    && pip3 install virtualenv
 COPY . src/
 WORKDIR /src/lndg/
-RUN pip install -r requirements.txt \
-    && pip install supervisor whitenoise
-
-# Embassy Setup for docker entrypoint
-WORKDIR /
-RUN pip install docker-compose
-ADD ./assets/compat/docker-compose.yaml /src/lndg/
+RUN virtualenv -p python3 .venv
+RUN .venv/bin/pip install -r requirements.txt
+EXPOSE 8889
 ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
 RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
-EXPOSE 8889
+
 ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]

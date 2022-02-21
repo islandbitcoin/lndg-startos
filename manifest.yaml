@@ -58,7 +58,7 @@ volumes:
     package-id: lnd
     volume-id: main
     path: /public
-    readonly: true
+    readonly: false
 interfaces:
   main:
     name: Browser Interface

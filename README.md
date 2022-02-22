@@ -1,3 +1,5 @@
+# WIP CURRENT STATUS: Application is up on port 8889, but dependency check is not displaying. Error message when logging in. 
+
 # Basic instructions for setup of LNDg
 
 `lndg` is a Lite GUI web interface to analyze lnd data and leverage the backend database for automation tools around rebalancing and other basic maintenance tasks. 

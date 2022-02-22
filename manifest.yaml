@@ -28,7 +28,36 @@ main:
     lnd: /mnt/lnd
   io-format: yaml
 health-checks: {}
-config: ~
+config:
+  get:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: compat
+    args:
+      - config
+      - get
+      - /root
+      - /mnt/assets/config_spec.yaml
+    mounts:
+      main: /root
+      compat: /mnt/assets
+    io-format: yaml
+  set:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: compat
+    args:
+      - config
+      - set
+      - lndg
+      - /root
+      - /mnt/assets/config_rules.yaml
+    mounts:
+      main: /root
+      compat: /mnt/assets
+    io-format: yaml
 properties:
   type: docker
   image: compat
@@ -40,14 +69,6 @@ properties:
   mounts:
     main: /root
   io-format: yaml
-dependencies:
-  lnd:
-    version: ">=0.12.1 <0.14.0"
-    description: The LNDg is an GUI tool for LND
-    critical: true
-    requirement:
-      type: required
-    config: ~
 volumes:
   main:
     type: data
@@ -74,9 +95,14 @@ interfaces:
     protocols:
       - tcp
       - http
-alerts:
-  install: |
-    After starting LNDg for the first time, I have no idea what it will do.
+dependencies:
+  lnd:
+    version: ">=0.11.1 <0.14.0"
+    description: Used to communicate with the Lightning Network.
+    critical: true
+    requirement:
+      type: required
+    config: ~
 backup:
   create:
     type: docker

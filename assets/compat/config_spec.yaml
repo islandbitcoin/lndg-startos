@@ -1,1 +1,43 @@
-{}
+lnd:
+  type: union
+  name: Lightning Network Daemon
+  description: The Lightning Network Daemon node to connect to.
+  tag:
+    id: type
+    name: Type
+    description: |
+      - Internal: The Lightning Network Daemon service installed to your Embassy.
+      - External: A Lightning Network Daemon instance running on a remote device (advanced).
+    variant-names:
+      internal: Internal
+      external: External
+  default: internal
+  variants:
+    internal: {}
+    external:
+      address:
+        type: string
+        name: Public Address
+        description: |
+          The public address of your LND REST server
+          NOTE: LNDg does not support a .onion URL here
+        nullable: false
+      rest-port:
+        type: number
+        name: REST Port
+        description: The port that your Lightning Network Daemon REST server is bound to
+        nullable: false
+        range: "[0,65535]"
+        integral: true
+        default: 8332
+      macaroon:
+        type: string
+        name: Macaroon
+        description: Your admin.macaroon file, Base64URL encoded. This is the same as the value after "macaroon=" in your lndconnect URL.
+        nullable: false
+        masked: true
+      cert:
+        type: string
+        name: TLS Cert
+        description: Your tls.cert file, Base64URL encoded. This is the same as the value after "cert=" in your lndconnect URL.
+        nullable: false

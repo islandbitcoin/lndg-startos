@@ -2,8 +2,10 @@ FROM --platform=linux/arm64/v8 ubuntu:focal
 RUN apt-get update -y \
     && apt-get upgrade -y\
     && apt-get install -y \
-    python3-pip \
+    python3-pip iproute2 wget \
     && pip3 install virtualenv
+RUN wget https://github.com/mikefarah/yq/releases/download/v4.12.2/yq_linux_arm.tar.gz -O - |\
+    tar xz && mv yq_linux_arm /usr/bin/yq
 COPY . src/
 WORKDIR /src/lndg/
 RUN virtualenv -p python3 .venv

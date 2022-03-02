@@ -4,15 +4,18 @@ _term() {
   echo "Caught SIGTERM signal!" 
   kill -TERM "$backend_process" 2>/dev/null
 }
+export TOR_ADDRESS=$(yq e '.tor-address' /root/start9/config.yaml)
+HOST_IP=$(ip -4 route list match 0/0 | awk '{print $3}')
 echo " \n Starting LNDg... \n"
 .venv/bin/pip install whitenoise tzdata && .venv/bin/python initialize.py \
-    -net 'mainnet' -server '4rpfsfb6ryxfbbwhrmvlbx37zzts2di4xhy2ekihz5p3hey5csibvyyd.local:10009' -d -dx \
-    -pw 'lndg-admin' -dir /mnt/lnd -ip '4rpfsfb6ryxfbbwhrmvlbx37zzts2di4xhy2ekihz5p3hey5csibvyyd.local'
+    -net 'mainnet' -server 'localhost:10009' -d -dx \
+    -pw 'lndg-admin' -dir /mnt/lnd -ip $HOST_IP
 echo "modifying settings.py"
 echo "CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = ['https://4rpfsfb6ryxfbbwhrmvlbx37zzts2di4xhy2ekihz5p3hey5csibvyyd.local']
+GRPC_DNS_RESOLVER='native'
+CSRF_TRUSTED_ORIGINS = ['https://localhost']
 " >> lndg/settings.py
 sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" /src/lndg/gui/lnd_deps/lnd_connect.py
 echo "running .venv/bin/python manage.py runserver 0.0.0.0:8889 "

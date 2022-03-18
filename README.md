@@ -18,6 +18,7 @@ Clone the project locally. Note the submodule link to the original project(s).
 ```
 git clone git@github.com:Start9Labs/lndg-wrapper.git
 cd lndg-wrapper
+git submodule update --init --recursive 
 ```
 
 ## Building

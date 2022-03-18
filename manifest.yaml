@@ -1,6 +1,6 @@
 id: lndg
 title: "LNDg"
-version: 1.0.3.0
+version: 1.0.3
 release-notes: "Initial release of a LNDg for EmbassyOS v0.3.0"
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/lndg-wrapper"
@@ -8,7 +8,6 @@ upstream-repo: "https://github.com/cryptosharks131/lndg"
 support-site: "https://t.me/+cPi5nRCg_1g1MTNh"
 marketing-site: "https://twitter.com/cryptosharks131"
 build: ["make"]
-min-os-version: "0.3.0"
 description:
   short: "Lite GUI interface for LND"
   long: "Lite GUI web interface to analyze lnd data and leverage the backend database for automation tools around rebalancing and other basic maintenance tasks."
@@ -90,7 +89,7 @@ interfaces:
     lan-config:
       443:
         ssl: true
-        mapping: 8889
+        internal: 8889
     ui: true
     protocols:
       - tcp
@@ -99,7 +98,6 @@ dependencies:
   lnd:
     version: ">=0.11.1 <0.14.0"
     description: Used to communicate with the Lightning Network.
-    critical: true
     requirement:
       type: required
     config: ~

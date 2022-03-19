@@ -1,7 +1,7 @@
 id: lndg
-title: "LNDg"
+title: LNDg
 version: 1.0.3
-release-notes: "Initial release of a LNDg for EmbassyOS v0.3.0"
+release-notes: Initial release of a LNDg for EmbassyOS v0.3.0
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/lndg-wrapper"
 upstream-repo: "https://github.com/cryptosharks131/lndg"
@@ -85,7 +85,7 @@ interfaces:
     description: The main LNDg browser interface
     tor-config:
       port-mapping:
-        8889: "8889"
+        80: "8889"
     lan-config:
       443:
         ssl: true
@@ -111,10 +111,10 @@ backup:
       - duplicity
       - create
       - /mnt/backup
-      - /root/data
+      - /root
     mounts:
       BACKUP: /mnt/backup
-      main: /root/data
+      main: /root
     io-format: yaml
   restore:
       type: docker
@@ -125,8 +125,8 @@ backup:
         - duplicity
         - restore
         - /mnt/backup
-        - /root/data
+        - /root
       mounts:
         BACKUP: /mnt/backup
-        main: /root/data
+        main: /root
       io-format: yaml

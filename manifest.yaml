@@ -26,7 +26,16 @@ main:
     compat: /mnt/assets
     lnd: /mnt/lnd
   io-format: yaml
-health-checks: {}
+health-checks:
+  main:
+    name: Web Interface
+    success-message: The LNDg UI is ready to visit in a web browser
+    type: docker
+    image: main
+    entrypoint: health-check.sh
+    args: []
+    io-format: json
+    inject: true
 config:
   get:
     type: docker

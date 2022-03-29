@@ -13,10 +13,10 @@ verify: lndg.s9pk $(S9PK_PATH)
 install: lndg.s9pk 
 	embassy-cli package install lndg.s9pk
 
-lndg.s9pk: manifest.yaml assets/compat/* image.tar docs/instructions.md LICENSE icon.png
+lndg.s9pk: manifest.yaml assets/* image.tar docs/instructions.md LICENSE icon.png
 	embassy-sdk pack
 
-image.tar: Dockerfile docker_entrypoint.sh ${LNDG_SRC}
+image.tar: Dockerfile docker_entrypoint.sh assets/utils/* ${LNDG_SRC}
 	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/lndg/main:${EMVER} \
 	--build-arg LND_HOST=${LND_IP} --platform=linux/arm64/v8 -f Dockerfile -o type=docker,dest=image.tar .

@@ -7,9 +7,10 @@ _term() {
 TOR_ADDRESS=$(yq e '.tor-address' /root/start9/config.yaml)
 LAN_ADDRESS=$(yq e '.lan-address' /root/start9/config.yaml)
 LND_ADDRESS='lnd.embassy'
+LNDG_PASS=$(yq e '.password' /root/start9/config.yaml)
 HOST_IP=$(ip -4 route list match 0/0 | awk '{print $3}')
 echo " \n Starting LNDg... \n"
-.venv/bin/pip install whitenoise tzdata && .venv/bin/python initialize.py -net 'mainnet' -server $LND_ADDRESS':10009' -d -dx -dir /mnt/lnd -ip $LAN_ADDRESS
+.venv/bin/pip install whitenoise tzdata && .venv/bin/python initialize.py -net 'mainnet' -server $LND_ADDRESS':10009' -d -dx -dir /mnt/lnd -ip $LAN_ADDRESS -p $LNDG_PASS
 echo "modifying settings.py..."
 echo "CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
@@ -19,7 +20,6 @@ CSRF_TRUSTED_ORIGINS = ['https://"$LAN_ADDRESS"']
 " >> lndg/settings.py
 sed -i "s/ALLOWED_HOSTS = \[/&'"$TOR_ADDRESS"',/" lndg/settings.py
 sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" /src/lndg/gui/lnd_deps/lnd_connect.py
-LNDG_PASS=$(cat data/lndg-admin.txt)
 # Properties 
   echo 'version: 2' >> /root/start9/stats.yaml
   echo 'data:' >> /root/start9/stats.yaml

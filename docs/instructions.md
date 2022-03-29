@@ -1,10 +1,11 @@
-# Instructions for installing and maintaining LNDg
+# Instructions for LNDg
 
-You can login using the username and password "lndg-admin"
+You can login using the username "lndg-admin"
+Your admin password can be found on the properties page.
 
-# Detailed Instructions from LNDg
+# Detailed instructions and suggested steps from LNDg support
 
-LNDg First Steps
+## LNDg First Steps
 1 - Enable the channels that you want to get outbound liquidity to
 
 2 - For each enabled channel enter the inbound % that you want to push that channel down to. For example, if you want 90% on the local side of a channel then enter 10% in the iTarget%. You must hit enter after you type in the number for the change to become effective.
@@ -13,7 +14,7 @@ LNDg First Steps
 
 4 - If you have a channel that you aren’t trying to push outbound towards but you don’t want it to be used to rebalance the enabled channels either then set iTarget% to 100%. As it is enabled it won’t be used to rebalance other channels and as you are trying to achieve 100% on the inbound side it won’t push any sats to the outbound side, therefore effectively allowing the channel to be ignored by the rebalancer.
 
-Settings
+## Settings
 Enabled - needs to be set to 1 for the rebalancing attempts to be switched on
 
 Target Amount % - is the percentage of each channel that you attempt to rebalance in a single attempt

@@ -10,6 +10,11 @@ LND_ADDRESS='lnd.embassy'
 LNDG_ADDRESS='lndg.embassy'
 LNDG_PASS=$(yq e '.password' /root/start9/config.yaml)
 HOST_IP=$(ip -4 route list match 0/0 | awk '{print $3}')
+
+# Creating duplicate directory for the lnd macaroon files 
+mkdir -p /mnt/lnd/data/chain/bitcoin/mainnet
+cp /mnt/lnd/*.macaroon /mnt/lnd/data/chain/bitcoin/mainnet
+
 echo " \n Starting LNDg... \n"
 .venv/bin/pip install whitenoise tzdata && .venv/bin/python initialize.py -net 'mainnet' -server $LND_ADDRESS':10009' -d -dx -dir /mnt/lnd -ip $LAN_ADDRESS -p $LNDG_PASS
 echo "modifying settings.py..."

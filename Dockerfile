@@ -1,7 +1,5 @@
 FROM --platform=linux/arm64/v8 ubuntu:focal
 
-ENV LND_ADDRESS $LND_HOST
-
 RUN apt-get update -y \
     && apt-get upgrade -y\
     && apt-get install -y \

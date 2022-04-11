@@ -18,7 +18,7 @@ CORS_ALLOW_CREDENTIALS = True
 GRPC_DNS_RESOLVER='native'
 CSRF_TRUSTED_ORIGINS = ['https://"$LAN_ADDRESS"']
 " >> lndg/settings.py
-sed -i "s/ALLOWED_HOSTS = \[/&'"$TOR_ADDRESS"',/" lndg/settings.py
+sed -i "s/ALLOWED_HOSTS = \[/&'"$TOR_ADDRESS"','"$LND_ADDRESS"',/" lndg/settings.py
 sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" /src/lndg/gui/lnd_deps/lnd_connect.py
 # Properties 
   echo 'version: 2' >> /root/start9/stats.yaml

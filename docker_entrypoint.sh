@@ -43,10 +43,12 @@ sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" /src/lndg/gui/lnd_d
         echo '    copyable: true' >> /root/start9/stats.yaml
         echo '    masked: true' >> /root/start9/stats.yaml
         echo '    qr: false' >> /root/start9/stats.yaml
+echo "starting jobs.py..."
+.venv/bin/python jobs.py
 echo "running .venv/bin/python manage.py runserver 0.0.0.0:8889 "
 .venv/bin/python manage.py runserver 0.0.0.0:8889
 &
     backend_process=$!
 # ERROR HANDLING
 trap _term SIGTERM
-wait -n $backend_process 
+wait -n $backend_process

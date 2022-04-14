@@ -48,7 +48,7 @@ echo "starting jobs.py..."
 .venv/bin/python jobs.py
 
 echo "starting systemd..."
-./systemd.sh
+# sudo bash systemd.sh
 
 echo "running .venv/bin/python manage.py runserver 0.0.0.0:8889 "
 .venv/bin/python manage.py runserver 0.0.0.0:8889

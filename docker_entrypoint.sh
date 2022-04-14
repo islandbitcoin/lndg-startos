@@ -47,8 +47,8 @@ sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" /src/lndg/gui/lnd_d
 echo "starting jobs.py..."
 .venv/bin/python jobs.py
 
-echo "starting supervisor..."
-.venv/bin/python initialize.py -sd && .venv/bin/pip install supervisor && .venv/bin/supervisord
+echo "starting systemd..."
+./systemd.sh
 
 echo "running .venv/bin/python manage.py runserver 0.0.0.0:8889 "
 .venv/bin/python manage.py runserver 0.0.0.0:8889

@@ -18,7 +18,8 @@ Clone the project locally. Note the submodule link to the original project(s).
 ```
 git clone git@github.com:Start9Labs/lndg-wrapper.git
 cd lndg-wrapper
-git submodule update --init --recursive 
+git submodule update --init --recursive
+docker run --privileged --rm tonistiigi/binfmt --install arm64,riscv64,arm
 ```
 
 ## Building

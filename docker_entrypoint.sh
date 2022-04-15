@@ -47,14 +47,17 @@ sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" /src/lndg/gui/lnd_d
 echo "starting jobs.py..."
 .venv/bin/python jobs.py
 
-echo "starting systemd..."
-# sudo bash systemd.sh
+
+echo "modifying systemd.sh..."
+chmod a+x systemd.sh
+sed -i 's/${SUDO_USER:-${USER}}/"'root'"/g' systemd.sh
+sed -i "s/HOME_DIR='\/root'/HOME_DIR='\/src'/g" systemd.sh
+
 
 echo "running .venv/bin/python manage.py runserver 0.0.0.0:8889 "
 .venv/bin/python manage.py runserver 0.0.0.0:8889
-&
+& ./systemd.sh &
     backend_process=$!
-
 
 # ERROR HANDLING
 trap _term SIGTERM

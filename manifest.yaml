@@ -1,7 +1,7 @@
 id: lndg
 title: LNDg
-version: 1.0.5
-release-notes: Initial release of a LNDg for EmbassyOS v0.3.0
+version: 1.0.5.1
+release-notes: Initial release of a LNDg for EmbassyOS v0.3.0.2
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/lndg-wrapper"
 upstream-repo: "https://github.com/cryptosharks131/lndg"

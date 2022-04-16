@@ -1,9 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 _term() { 
   echo "Caught SIGTERM signal!" 
   kill -TERM "$backend_process" 2>/dev/null
 }
+
 TOR_ADDRESS=$(yq e '.tor-address' /root/start9/config.yaml)
 LAN_ADDRESS=$(yq e '.lan-address' /root/start9/config.yaml)
 LND_ADDRESS='lnd.embassy'
@@ -15,7 +16,10 @@ HOST_IP=$(ip -4 route list match 0/0 | awk '{print $3}')
 mkdir -p /mnt/lnd/data/chain/bitcoin/mainnet
 cp /mnt/lnd/*.macaroon /mnt/lnd/data/chain/bitcoin/mainnet
 
-echo " \n Starting LNDg... \n"
+#Starting LNDg and setting up settings.py
+echo
+echo "  Starting LNDg... "
+echo
 .venv/bin/pip install whitenoise tzdata && .venv/bin/python initialize.py -net 'mainnet' -server $LND_ADDRESS':10009' -d -dx -dir /mnt/lnd -ip $LAN_ADDRESS -p $LNDG_PASS
 echo "modifying settings.py..."
 echo "CORS_ALLOW_CREDENTIALS = True
@@ -26,7 +30,8 @@ CSRF_TRUSTED_ORIGINS = ['https://"$LAN_ADDRESS"']
 " >> lndg/settings.py
 sed -i "s/ALLOWED_HOSTS = \[/&'"$TOR_ADDRESS"','"$LNDG_ADDRESS"',/" lndg/settings.py
 sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" /src/lndg/gui/lnd_deps/lnd_connect.py
-# Properties 
+
+# Properties Page showing password to be used for login
   echo 'version: 2' >> /root/start9/stats.yaml
   echo 'data:' >> /root/start9/stats.yaml
   echo '  Username: ' >> /root/start9/stats.yaml
@@ -44,21 +49,21 @@ sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" /src/lndg/gui/lnd_d
         echo '    masked: true' >> /root/start9/stats.yaml
         echo '    qr: false' >> /root/start9/stats.yaml
 
+# Starting all processes
 echo "starting jobs.py..."
 .venv/bin/python jobs.py
-
-
 echo "modifying systemd.sh..."
 chmod a+x systemd.sh
 sed -i 's/${SUDO_USER:-${USER}}/"'root'"/g' systemd.sh
 sed -i "s/HOME_DIR='\/root'/HOME_DIR='\/src'/g" systemd.sh
-
-
 echo "running .venv/bin/python manage.py runserver 0.0.0.0:8889 "
-.venv/bin/python manage.py runserver 0.0.0.0:8889
-& ./systemd.sh &
-    backend_process=$!
+.venv/bin/python manage.py runserver 0.0.0.0:8889 & 
+backend_process=$!
+echo "PID: $backend_process"
+echo "starting systemd..."
+sleep 15 && ./systemd.sh 
 
 # ERROR HANDLING
 trap _term SIGTERM
-wait -n $backend_process
+wait $backend_process
+echo "Exit status $?"

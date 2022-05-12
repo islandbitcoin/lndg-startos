@@ -10,7 +10,6 @@ LAN_ADDRESS=$(yq e '.lan-address' /root/start9/config.yaml)
 LND_ADDRESS='lnd.embassy'
 LNDG_ADDRESS='lndg.embassy'
 LNDG_PASS=$(yq e '.password' /root/start9/config.yaml)
-HOST_IP=$(ip -4 route list match 0/0 | awk '{print $3}')
 
 # Creating duplicate directory for the lnd macaroon files 
 mkdir -p /mnt/lnd/data/chain/bitcoin/mainnet
@@ -20,8 +19,8 @@ cp /mnt/lnd/*.macaroon /mnt/lnd/data/chain/bitcoin/mainnet
 echo
 echo "  Starting LNDg... "
 echo
-.venv/bin/pip install whitenoise tzdata && .venv/bin/python initialize.py -net 'mainnet' -server $LND_ADDRESS':10009' -d -dx -dir /mnt/lnd -ip $LAN_ADDRESS -p $LNDG_PASS
-echo "modifying settings.py..."
+.venv/bin/pip install whitenoise tzdata && .venv/bin/python initialize.py -net 'mainnet' -server $LND_ADDRESS':10009' -d -dx -dir /mnt/lnd -ip $LAN_ADDRESS -p $LNDG_PASS --supervisord
+echo "Modifying settings.py..."
 echo "CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
@@ -29,7 +28,7 @@ GRPC_DNS_RESOLVER='native'
 CSRF_TRUSTED_ORIGINS = ['https://"$LAN_ADDRESS"']
 " >> lndg/settings.py
 sed -i "s/ALLOWED_HOSTS = \[/&'"$TOR_ADDRESS"','"$LNDG_ADDRESS"',/" lndg/settings.py
-sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" /src/lndg/gui/lnd_deps/lnd_connect.py
+sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" gui/lnd_deps/lnd_connect.py
 
 # Properties Page showing password to be used for login
   echo 'version: 2' >> /root/start9/stats.yaml
@@ -50,20 +49,25 @@ sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" /src/lndg/gui/lnd_d
         echo '    qr: false' >> /root/start9/stats.yaml
 
 # Starting all processes
-echo "starting jobs.py..."
+echo "Starting jobs.py..."
 .venv/bin/python jobs.py
-echo "modifying systemd.sh..."
-chmod a+x systemd.sh
-sed -i 's/${SUDO_USER:-${USER}}/"'root'"/g' systemd.sh
-sed -i "s/HOME_DIR='\/root'/HOME_DIR='\/src'/g" systemd.sh
-echo "running .venv/bin/python manage.py runserver 0.0.0.0:8889 "
+echo "Starting supervisord..."
+.venv/bin/supervisord -c /usr/local/etc/supervisord.conf
+echo "Starting manage.py..."
 .venv/bin/python manage.py runserver 0.0.0.0:8889 & 
+echo "Setting up Backend Data, Automated Rebalancing and HTLC Stream Data..."
+.venv/bin/python htlc_stream.py
+while true;
+do .venv/bin/python jobs.py;
+.venv/bin/python rebalancer.py;
+sleep 10; 
+done 
+
+echo "Shutting down service" &
 backend_process=$!
 echo "PID: $backend_process"
-echo "starting systemd..."
-sleep 15 && ./systemd.sh 
 
-# ERROR HANDLING
+# SIGTERM HANDLING
 trap _term SIGTERM
 wait $backend_process
 echo "Exit status $?"

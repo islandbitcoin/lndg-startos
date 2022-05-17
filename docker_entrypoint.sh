@@ -56,7 +56,7 @@ echo "Starting supervisord..."
 echo "Starting manage.py..."
 .venv/bin/python manage.py runserver 0.0.0.0:8889 & 
 echo "Setting up Backend Data, Automated Rebalancing and HTLC Stream Data..."
-.venv/bin/python htlc_stream.py
+.venv/bin/python htlc_stream.py &
 while true;
 do .venv/bin/python jobs.py;
 .venv/bin/python rebalancer.py;

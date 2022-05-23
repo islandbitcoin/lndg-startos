@@ -25,6 +25,7 @@ main:
     main: /root
     compat: /mnt/assets
     lnd: /mnt/lnd
+    data: /lndg/data
   io-format: yaml
 health-checks:
   main:
@@ -88,6 +89,8 @@ volumes:
     volume-id: main
     path: /public
     readonly: false
+  data:
+    type: data
 interfaces:
   main:
     name: Browser Interface

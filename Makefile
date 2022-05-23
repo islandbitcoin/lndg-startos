@@ -16,6 +16,7 @@ lndg.s9pk: manifest.yaml assets/* image.tar docs/instructions.md LICENSE icon.pn
 	embassy-sdk pack
 
 image.tar: Dockerfile docker_entrypoint.sh assets/utils/* ${LNDG_SRC}
+	docker run --privileged --rm tonistiigi/binfmt --install aarch64,riscv64,arm
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/lndg/main:${EMVER}	--platform=linux/arm64/v8 -f Dockerfile -o type=docker,dest=image.tar .
 
 clean:

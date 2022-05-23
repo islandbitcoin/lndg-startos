@@ -1,10 +1,10 @@
 #!/bin/bash
 
 DURATION=$(</dev/stdin)
-if (($DURATION <= 2500 )); then
+if (($DURATION <= 8000 )); then
     exit 60
 else
-    curl --silent lndg.embassy:8889 &>/dev/null
+    curl --silent --fail lndg.embassy:8889 &>/dev/null
     RES=$?
     if test "$RES" != 0; then
         echo "The LNDg UI is unreachable" >&2

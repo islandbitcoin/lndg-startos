@@ -21,6 +21,8 @@ RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
 ADD assets/utils/health-check.sh /usr/local/bin/health-check.sh
 RUN chmod +x /usr/local/bin/health-check.sh
 
+# Persist data
+VOLUME /lndg/data
 EXPOSE 8889
 
 ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]

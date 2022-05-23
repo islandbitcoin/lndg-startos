@@ -9,9 +9,9 @@ Your admin password can be found on the properties page.
 
 <!-- MD_PACKER_INLINE BEGIN -->
 ![internal node connection](./assets/step1.png)
-<!-- MD_PACKER_INLINE END -->
-
 ![Step1](./assets/step1.png) 
 ![Step3](./assets/step3.png) 
+<!-- MD_PACKER_INLINE END -->
+
 
 For more information on how to use this service, please visit their [README.md](https://github.com/cryptosharks131/lndg/blob/master/README.md#auto-rebalancer)

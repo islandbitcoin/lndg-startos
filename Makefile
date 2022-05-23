@@ -12,7 +12,7 @@ verify: lndg.s9pk $(S9PK_PATH)
 install: lndg.s9pk 
 	embassy-cli package install lndg.s9pk
 
-lndg.s9pk: manifest.yaml assets/* image.tar docs/instructions.md LICENSE icon.png
+lndg.s9pk: manifest.yaml assets/* image.tar docs/* LICENSE icon.png
 	embassy-sdk pack
 
 image.tar: Dockerfile docker_entrypoint.sh assets/utils/* ${LNDG_SRC}

@@ -4,11 +4,11 @@
 The objective of the Auto-Rebalancer is to automatically "refill" the liquidity on the local side (i.e. OUTBOUND) of profitable and lucarative channels. So that, when a forward comes in from another node there is always enough liquidity to route the payment and in return collect the desired routing fees.
 ## Instructions for LNDg
 
-You can login using the username "lndg-admin"
+You can login using the username "lndg-admin".
+
 Your admin password can be found on the properties page.
 
 <!-- MD_PACKER_INLINE BEGIN -->
-![internal node connection](./assets/step1.png)
 ![Step1](./assets/step1.png) 
 ![Step3](./assets/step3.png) 
 <!-- MD_PACKER_INLINE END -->

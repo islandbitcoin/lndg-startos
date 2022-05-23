@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DURATION=$(</dev/stdin)
-if (($DURATION <= 10000 )); then
+if (($DURATION <= 2500 )); then
     exit 60
 else
     curl --silent lndg.embassy:8889 &>/dev/null

@@ -7,7 +7,7 @@ The objective of the Auto-Rebalancer is to automatically "refill" the liquidity 
 You can login using the username "lndg-admin"
 Your admin password can be found on the properties page.
 
-![Step1](./docs/step1.png) 
-![Step3](./docs/step3.png) 
+![Step1](./assets/step1.png) 
+![Step3](./assets/step3.png) 
 
 For more information on how to use this service, please visit their [README.md](https://github.com/cryptosharks131/lndg/blob/master/README.md#auto-rebalancer)

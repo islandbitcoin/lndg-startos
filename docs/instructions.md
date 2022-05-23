@@ -7,6 +7,10 @@ The objective of the Auto-Rebalancer is to automatically "refill" the liquidity 
 You can login using the username "lndg-admin"
 Your admin password can be found on the properties page.
 
+<!-- MD_PACKER_INLINE BEGIN -->
+![internal node connection](./assets/step1.png)
+<!-- MD_PACKER_INLINE END -->
+
 ![Step1](./assets/step1.png) 
 ![Step3](./assets/step3.png) 
 

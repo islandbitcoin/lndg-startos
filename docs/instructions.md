@@ -9,8 +9,10 @@ You can login using the username "lndg-admin".
 Your admin password can be found on the properties page.
 
 <!-- MD_PACKER_INLINE BEGIN -->
-![Step1](./assets/step1.png) 
-![Step3](./assets/step3.png) 
+![screenshot with step 1-2](https://github.com/Start9Labs/lndg-wrapper/blob/master/docs/assets/step1.png)
+<!-- MD_PACKER_INLINE END -->
+<!-- MD_PACKER_INLINE BEGIN -->
+![screenshot with step 3](https://github.com/Start9Labs/lndg-wrapper/blob/master/docs/assets/step3.png "Step 3")[H]
 <!-- MD_PACKER_INLINE END -->
 
 

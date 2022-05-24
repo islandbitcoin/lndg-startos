@@ -20,6 +20,7 @@ git clone git@github.com:Start9Labs/lndg-wrapper.git
 cd lndg-wrapper
 git submodule update --init --recursive
 docker run --privileged --rm tonistiigi/binfmt --install arm64,riscv64,arm
+cargo install --git=https://github.com/Start9Labs/md-packer.git --branch=main
 ```
 
 ## Building

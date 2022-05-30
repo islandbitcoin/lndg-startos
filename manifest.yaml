@@ -1,6 +1,6 @@
 id: lndg
 title: LNDg
-version: 1.1.1.1
+version: 1.1.1
 release-notes: Initial release of a LNDg for EmbassyOS v0.3.0.3
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/lndg-wrapper"
@@ -117,28 +117,26 @@ backup:
   create:
     type: docker
     image: compat
+    system: true 
+    entrypoint: compat 
+    args: 
+      - duplicity
+      - create
+      - /mnt/backup
+      - /root/data
+    mounts:
+      BACKUP: "/mnt/backup" 
+      main: "/root/data"
+  restore:
+    type: docker
+    image: compat
     system: true
     entrypoint: compat
     args:
       - duplicity
-      - create
+      - restore
+      - /root/data
       - /mnt/backup
-      - /root
     mounts:
-      BACKUP: /mnt/backup
-      main: /root
-    io-format: yaml
-  restore:
-      type: docker
-      image: compat
-      system: true
-      entrypoint: compat
-      args:
-        - duplicity
-        - restore
-        - /mnt/backup
-        - /root
-      mounts:
-        BACKUP: /mnt/backup
-        main: /root
-      io-format: yaml
+      BACKUP: "/mnt/backup"
+      main: "/root/data"

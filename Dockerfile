@@ -13,6 +13,7 @@ COPY . /
 WORKDIR /lndg/
 RUN virtualenv -p python3 .venv
 RUN .venv/bin/python -m pip install --upgrade pip
+RUN sed -i "s/protobuf/protobuf==v3.20.0/" ./requirements.txt 
 RUN .venv/bin/pip install -r requirements.txt
 RUN .venv/bin/pip install supervisor
 

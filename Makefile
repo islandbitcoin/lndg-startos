@@ -1,4 +1,6 @@
 EMVER := $(shell yq e ".version" manifest.yaml)
+COMPAT_ASSET_PATHS := $(shell find ./assets/compat/*)
+UTILS_ASSET_PATHS := $(shell find ./assets/utils/*)
 LNDG_SRC := $(shell find ./lndg)
 DOC_ASSETS := $(shell find ./docs/assets)
 S9PK_PATH=$(shell find . -name lndg.s9pk -print)
@@ -7,22 +9,19 @@ S9PK_PATH=$(shell find . -name lndg.s9pk -print)
 
 all: verify
 
-verify: lndg.s9pk $(S9PK_PATH)
-	embassy-sdk verify s9pk $(S9PK_PATH)
-
-install: lndg.s9pk 
-	embassy-cli package install lndg.s9pk
-
-lndg.s9pk: manifest.yaml assets/* image.tar docs/* LICENSE icon.png
-	embassy-sdk pack
-
-instructions.md: docs/instructions.md $(DOC_ASSETS)
-	cd docs && md-packer < instructions.md > ../instructions.md
-	
-image.tar: Dockerfile docker_entrypoint.sh assets/utils/* ${LNDG_SRC}
-	docker run --privileged --rm tonistiigi/binfmt --install aarch64,riscv64,arm
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/lndg/main:${EMVER}	--platform=linux/arm64/v8 -f Dockerfile -o type=docker,dest=image.tar .
-
 clean:
 	rm -f lndg.s9pk
 	rm -f image.tar
+
+verify: lndg.s9pk $(S9PK_PATH)
+	embassy-sdk verify s9pk $(S9PK_PATH)
+
+lndg.s9pk: manifest.yaml image.tar instructions.md LICENSE icon.png $(COMPAT_ASSET_PATHS)
+	embassy-sdk pack
+
+image.tar: docker_entrypoint.sh Dockerfile ${LNDG_SRC} $(UTILS_ASSET_PATHS)
+	docker run --privileged --rm tonistiigi/binfmt --install aarch64,riscv64,arm
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/lndg/main:${EMVER}	--platform=linux/arm64/v8 -f ./Dockerfile -o type=docker,dest=image.tar .
+
+instructions.md: docs/instructions.md $(DOC_ASSETS)
+	cd docs && md-packer < instructions.md > ../instructions.md

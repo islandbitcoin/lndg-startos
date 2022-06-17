@@ -13,9 +13,7 @@ Your admin password can be found on the properties page.
 
 <!-- MD_PACKER_INLINE BEGIN -->
 ![screenshot with step 1-2](https://github.com/Start9Labs/lndg-wrapper/blob/master/docs/assets/step1.png)
-<!-- MD_PACKER_INLINE END -->
-<!-- MD_PACKER_INLINE BEGIN -->
-![screenshot with step 3](https://github.com/Start9Labs/lndg-wrapper/blob/master/docs/assets/step3.png "Step 3")
+![screenshot with step 3](https://github.com/Start9Labs/lndg-wrapper/blob/master/docs/assets/step3.png)
 <!-- MD_PACKER_INLINE END -->
 
 

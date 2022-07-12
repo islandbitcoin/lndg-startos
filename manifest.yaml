@@ -1,7 +1,8 @@
 id: lndg
 title: LNDg
-version: 1.1.1
-release-notes: Initial release of a LNDg for EmbassyOS v0.3.0.3
+version: 1.1.1.1
+release-notes: |
+  * Switch to using new EOS APIs for faster configuration and properties
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/lndg-wrapper"
 upstream-repo: "https://github.com/cryptosharks131/lndg"
@@ -26,7 +27,6 @@ main:
     compat: /mnt/assets
     lnd: /mnt/lnd
     data: /lndg/data
-  io-format: yaml
 health-checks:
   main:
     name: Web Interface
@@ -39,45 +39,11 @@ health-checks:
     inject: true
 config:
   get:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args:
-      - config
-      - get
-      - /root
-      - /mnt/assets/config_spec.yaml
-    mounts:
-      main: /root
-      compat: /mnt/assets
-    io-format: yaml
+    type: script
   set:
-    type: docker
-    image: compat
-    system: true
-    entrypoint: compat
-    args:
-      - config
-      - set
-      - lndg
-      - /root
-      - /mnt/assets/config_rules.yaml
-    mounts:
-      main: /root
-      compat: /mnt/assets
-    io-format: yaml
+    type: script
 properties:
-  type: docker
-  image: compat
-  system: true
-  entrypoint: compat
-  args:
-    - properties
-    - /root
-  mounts:
-    main: /root
-  io-format: yaml
+  type: script
 volumes:
   main:
     type: data

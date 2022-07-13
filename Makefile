@@ -27,5 +27,4 @@ instructions.md: docs/instructions.md $(DOC_ASSETS)
 	cd docs && md-packer < instructions.md > ../instructions.md
 
 scripts/embassy.js: scripts/**/*.ts
-	deno cache --reload scripts/embassy.ts
 	deno bundle scripts/embassy.ts scripts/embassy.js

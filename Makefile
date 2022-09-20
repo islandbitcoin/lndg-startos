@@ -9,6 +9,9 @@ S9PK_PATH=$(shell find . -name lndg.s9pk -print)
 
 all: verify
 
+install: all
+	embassy-cli package install lndg.s9pk
+
 clean:
 	rm -f lndg.s9pk
 	rm -f image.tar

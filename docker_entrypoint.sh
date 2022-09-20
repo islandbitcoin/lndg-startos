@@ -31,7 +31,7 @@ sed -i "s/ALLOWED_HOSTS = \[/&'"$TOR_ADDRESS"','"$LNDG_ADDRESS"',/" lndg/setting
 sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" gui/lnd_deps/lnd_connect.py
 
 # Properties Page showing password to be used for login
-  echo 'version: 2' >> /root/start9/stats.yaml
+  echo 'version: 2' > /root/start9/stats.yaml
   echo 'data:' >> /root/start9/stats.yaml
   echo '  Username: ' >> /root/start9/stats.yaml
         echo '    type: string' >> /root/start9/stats.yaml

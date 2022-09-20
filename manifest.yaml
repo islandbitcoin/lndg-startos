@@ -1,8 +1,9 @@
 id: lndg
 title: LNDg
-version: 1.2.1
+version: 1.3.1
 release-notes: |
-  * Switch to using new EOS APIs for faster configuration and properties, LNDg Minor updates
+  * LNDg New Features [Release Notes](https://github.com/cryptosharks131/lndg/releases/tag/v1.3.0)
+  * LNDg Minor Updates [Release Notes](https://github.com/cryptosharks131/lndg/releases/tag/v1.3.1)
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/lndg-wrapper"
 upstream-repo: "https://github.com/cryptosharks131/lndg"
@@ -106,3 +107,12 @@ backup:
     mounts:
       BACKUP: "/mnt/backup"
       main: "/root/data"
+migrations:
+  from:
+    "*":
+      type: script
+      args: ["from"]
+  to:
+    "*":
+      type: script
+      args: ["to"]

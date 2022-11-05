@@ -1,3 +1,4 @@
 lndg.s9pk
 image.tar
-tri-push.sh
+scripts/*.js
+docker-images/

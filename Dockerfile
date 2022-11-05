@@ -1,4 +1,8 @@
-FROM --platform=linux/arm64/v8 ubuntu:focal
+FROM ubuntu:focal
+
+# arm64 or amd64
+ARG PLATFORM
+ARG ARCH
 
 RUN apt-get update -y \
     && apt-get upgrade -y\
@@ -6,8 +10,8 @@ RUN apt-get update -y \
     python3-pip iproute2 wget curl tini \
     && pip3 install virtualenv bash \
     && apt install -y systemctl
-RUN wget https://github.com/mikefarah/yq/releases/download/v4.12.2/yq_linux_arm.tar.gz -O - |\
-    tar xz && mv yq_linux_arm /usr/bin/yq
+RUN wget https://github.com/mikefarah/yq/releases/download/v4.6.3/yq_linux_${PLATFORM}.tar.gz -O - |\
+  tar xz && mv yq_linux_${PLATFORM} /usr/bin/yq
 COPY . /
 
 WORKDIR /lndg/
@@ -19,11 +23,6 @@ RUN .venv/bin/pip install supervisor
 
 ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
 RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
-ADD assets/utils/health-check.sh /usr/local/bin/health-check.sh
-RUN chmod +x /usr/local/bin/health-check.sh
 
 # Persist data
 VOLUME /lndg/data
-EXPOSE 8889
-
-ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]

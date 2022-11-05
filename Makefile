@@ -1,33 +1,39 @@
-EMVER := $(shell yq e ".version" manifest.yaml)
-COMPAT_ASSET_PATHS := $(shell find ./assets/compat/*)
-UTILS_ASSET_PATHS := $(shell find ./assets/utils/*)
-LNDG_SRC := $(shell find ./lndg)
-DOC_ASSETS := $(shell find ./docs/assets)
-S9PK_PATH=$(shell find . -name lndg.s9pk -print)
+PKG_ID := $(shell yq e ".id" manifest.yaml)
+PKG_VERSION := $(shell yq e ".version" manifest.yaml)
+TS_FILES := $(shell find ./ -name \*.ts)
 
+# delete the target of a rule if it has changed and its recipe exits with a nonzero exit status
 .DELETE_ON_ERROR:
 
 all: verify
 
-install: all
-	embassy-cli package install lndg.s9pk
+verify: $(PKG_ID).s9pk
+	embassy-sdk verify s9pk $(PKG_ID).s9pk
+
+install: $(PKG_ID).s9pk
+	embassy-cli package install $(PKG_ID).s9pk
 
 clean:
-	rm -f lndg.s9pk
+	rm -rf docker-images
 	rm -f image.tar
+	rm -f $(PKG_ID).s9pk
 	rm -f scripts/*.js
+	rm -f instructions.md
 
-verify: lndg.s9pk $(S9PK_PATH)
-	embassy-sdk verify s9pk $(S9PK_PATH)
+scripts/embassy.js: $(TS_FILES)
+	deno bundle scripts/embassy.ts scripts/embassy.js
 
-lndg.s9pk: manifest.yaml image.tar instructions.md LICENSE icon.png scripts/embassy.js $(COMPAT_ASSET_PATHS)
+docker-images/x86_64.tar: Dockerfile docker_entrypoint.sh
+	mkdir -p docker-images
+	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --platform=linux/amd64 --build-arg PLATFORM=amd64 -o type=docker,dest=docker-images/x86_64.tar .
+
+docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh
+	mkdir -p docker-images
+	docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --platform=linux/arm64 --build-arg PLATFORM=arm64 -o type=docker,dest=docker-images/aarch64.tar .
+
+$(PKG_ID).s9pk: manifest.yaml instructions.md LICENSE icon.png scripts/embassy.js docker-images/aarch64.tar docker-images/x86_64.tar
+	if ! [ -z "$(ARCH)" ]; then cp docker-images/$(ARCH).tar image.tar; fi
 	embassy-sdk pack
-
-image.tar: docker_entrypoint.sh Dockerfile ${LNDG_SRC} $(UTILS_ASSET_PATHS)
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/lndg/main:${EMVER}	--platform=linux/arm64/v8 -f ./Dockerfile -o type=docker,dest=image.tar .
-
+	
 instructions.md: docs/instructions.md $(DOC_ASSETS)
 	cd docs && md-packer < instructions.md > ../instructions.md
-
-scripts/embassy.js: scripts/**/*.ts
-	deno bundle scripts/embassy.ts scripts/embassy.js

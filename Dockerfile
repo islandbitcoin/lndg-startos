@@ -12,7 +12,7 @@ RUN apt-get update -y \
     && apt install -y systemctl
 RUN wget https://github.com/mikefarah/yq/releases/download/v4.6.3/yq_linux_${PLATFORM}.tar.gz -O - |\
   tar xz && mv yq_linux_${PLATFORM} /usr/bin/yq
-COPY . /
+COPY ./lndg /lndg
 
 WORKDIR /lndg/
 RUN virtualenv -p python3 .venv

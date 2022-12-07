@@ -1,8 +1,10 @@
 id: lndg
 title: LNDg
-version: 1.2.1
+version: 1.3.1
 release-notes: |
-  * Switch to using new EOS APIs for faster configuration and properties, LNDg Minor updates
+  * Updated to run on x86_64 architecture
+  * LNDg Minor Updates [Release Notes](https://github.com/cryptosharks131/lndg/releases/tag/v1.3.1)
+  * Fix backup restore
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/lndg-wrapper"
 upstream-repo: "https://github.com/cryptosharks131/lndg"
@@ -10,13 +12,12 @@ support-site: "https://t.me/+cPi5nRCg_1g1MTNh"
 marketing-site: "https://twitter.com/cryptosharks131"
 build: ["make"]
 description:
-  short: "Powerful web interface for LND developed specifically for LND Routing Node Operators"
+  short: "Web UI for LND developed specifically for LND Routing Node Operators"
   long: "Powerful web interface to analyze lnd data and leverage the backend database for automation tools around rebalancing and other basic maintenance tasks."
 assets:
   license: LICENSE
   icon: icon.png
   instructions: instructions.md
-  docker-images: image.tar
 main:
   type: docker
   image: main
@@ -24,19 +25,13 @@ main:
   args: []
   mounts:
     main: /root
-    compat: /mnt/assets
     lnd: /mnt/lnd
     data: /lndg/data
 health-checks:
-  main:
+  web-ui:
     name: Web Interface
-    success-message: The LNDg UI is ready to visit in a web browser
-    type: docker
-    image: main
-    entrypoint: health-check.sh
-    args: []
-    io-format: json
-    inject: true
+    success-message: LNDg is ready to visit in a web browser
+    type: script
 config:
   get:
     type: script
@@ -47,8 +42,6 @@ properties:
 volumes:
   main:
     type: data
-  compat:
-    type: assets
   lnd:
     type: pointer
     package-id: lnd
@@ -101,8 +94,17 @@ backup:
     args:
       - duplicity
       - restore
-      - /root/data
       - /mnt/backup
+      - /root/data
     mounts:
       BACKUP: "/mnt/backup"
       main: "/root/data"
+migrations:
+  from:
+    "*":
+      type: script
+      args: ["from"]
+  to:
+    "*":
+      type: script
+      args: ["to"]

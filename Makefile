@@ -1,6 +1,7 @@
 PKG_ID := $(shell yq e ".id" manifest.yaml)
 PKG_VERSION := $(shell yq e ".version" manifest.yaml)
 TS_FILES := $(shell find ./ -name \*.ts)
+DOC_ASSETS := $(shell find ./docs/assets)
 
 # delete the target of a rule if it has changed and its recipe exits with a nonzero exit status
 .DELETE_ON_ERROR:

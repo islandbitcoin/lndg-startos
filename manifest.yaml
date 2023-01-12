@@ -1,10 +1,8 @@
 id: lndg
 title: LNDg
-version: 1.3.1
+version: 1.5.0
 release-notes: |
-  * Updated to run on x86_64 architecture
-  * LNDg Minor Updates [Release Notes](https://github.com/cryptosharks131/lndg/releases/tag/v1.3.1)
-  * Fix backup restore
+  * Update to v1.5.0 [Release Notes](https://github.com/cryptosharks131/lndg/releases/tag/v1.5.0)
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/lndg-wrapper"
 upstream-repo: "https://github.com/cryptosharks131/lndg"
@@ -81,11 +79,13 @@ backup:
     args: 
       - duplicity
       - create
+      - /lndg/data
       - /mnt/backup
       - /root/data
     mounts:
       BACKUP: "/mnt/backup" 
       main: "/root/data"
+      data: /lndg/data
   restore:
     type: docker
     image: compat
@@ -94,11 +94,13 @@ backup:
     args:
       - duplicity
       - restore
+      - /lndg/data
       - /mnt/backup
       - /root/data
     mounts:
       BACKUP: "/mnt/backup"
       main: "/root/data"
+      data: /lndg/data
 migrations:
   from:
     "*":

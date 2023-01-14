@@ -40,6 +40,8 @@ properties:
 volumes:
   main:
     type: data
+  compat:
+    type: assets
   lnd:
     type: pointer
     package-id: lnd
@@ -75,32 +77,22 @@ backup:
     type: docker
     image: compat
     system: true 
-    entrypoint: compat 
-    args: 
-      - duplicity
-      - create
-      - /lndg/data
-      - /mnt/backup
-      - /root/data
+    entrypoint: /assets/backup.sh 
     mounts:
       BACKUP: "/mnt/backup" 
+      compat: "/assets"
       main: "/root/data"
-      data: /lndg/data
+      data: "/lndg/data"
   restore:
     type: docker
     image: compat
     system: true
-    entrypoint: compat
-    args:
-      - duplicity
-      - restore
-      - /lndg/data
-      - /mnt/backup
-      - /root/data
+    entrypoint: /assets/restore.sh
     mounts:
       BACKUP: "/mnt/backup"
+      compat: "/assets"
       main: "/root/data"
-      data: /lndg/data
+      data: "/lndg/data"
 migrations:
   from:
     "*":

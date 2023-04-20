@@ -19,6 +19,15 @@ cp /mnt/lnd/*.macaroon /mnt/lnd/data/chain/bitcoin/mainnet
 echo
 echo "  Starting LNDg... "
 echo
+
+# modify the lndg/gui/lnd_deps/lnd_connect.py file to include follwing option grpc.secure_channel
+# options=[('grpc.ssl_target_name_override', 'embassy')
+if grep -q "grpc.ssl_target_name_override" gui/lnd_deps/lnd_connect.py; then
+    echo "SSL override already installed"
+else
+  sed -i "s/options=\[/options=\[('grpc.ssl_target_name_override', 'embassy'), /" gui/lnd_deps/lnd_connect.py
+fi
+.venv/bin/pip install --upgrade protobuf
 .venv/bin/pip install whitenoise tzdata && .venv/bin/python initialize.py -net 'mainnet' -server $LND_ADDRESS':10009' -d -dx -dir /mnt/lnd -ip $LAN_ADDRESS -p $LNDG_PASS --supervisord
 echo "Modifying settings.py..."
 echo "CORS_ALLOW_CREDENTIALS = True
@@ -29,6 +38,27 @@ CSRF_TRUSTED_ORIGINS = ['https://"$LAN_ADDRESS"']
 " >> lndg/settings.py
 sed -i "s/ALLOWED_HOSTS = \[/&'"$TOR_ADDRESS"','"$LNDG_ADDRESS"',/" lndg/settings.py
 sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" gui/lnd_deps/lnd_connect.py
+# change the line below to only run if the django_filters module is not installed
+# sed -i "s/INSTALLED_APPS = \[/&'django_filters',/" lndg/settings.py
+# check the lndg/settings.py file to see if django_filters is already installed
+if grep -q "django_filters" lndg/settings.py; then 
+    echo "django_filters already installed"
+else
+    sed -i "s/INSTALLED_APPS = \[/&'django_filters',/" lndg/settings.py
+fi  
+# check the lndg/settings.py file to see if filter backends are already installed
+if grep -q "DEFAULT_FILTER_BACKENDS" lndg/settings.py; then
+    echo "DEFAULT_FILTER_BACKENDS already installed"
+else
+    sed -i "s/REST_FRAMEWORK = {/&'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),/" lndg/settings.py
+fi  
+# add the following line to the lndg/settings.py file
+# os.environ["GRPC_SSL_CIPHER_SUITES"] = "eNULL"
+if grep -q "GRPC_SSL_CIPHER_SUITES" lndg/settings.py; then
+    echo "GRPC_SSL_CIPHER_SUITES already installed"
+else
+    echo 'os.environ["GRPC_SSL_CIPHER_SUITES"] = "eNULL"' >> lndg/settings.py
+fi
 
 # Properties Page showing password to be used for login
   echo 'version: 2' > /root/start9/stats.yaml
@@ -60,7 +90,7 @@ echo "Setting up Backend Data, Automated Rebalancing and HTLC Stream Data..."
 while true;
 do .venv/bin/python jobs.py;
 .venv/bin/python rebalancer.py;
-sleep 10; 
+sleep 210; 
 done 
 
 echo "Shutting down service" &

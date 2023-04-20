@@ -8,6 +8,7 @@ _term() {
 TOR_ADDRESS=$(yq e '.tor-address' /root/start9/config.yaml)
 LAN_ADDRESS=$(yq e '.lan-address' /root/start9/config.yaml)
 LND_ADDRESS='lnd.embassy'
+LND_IP=$(getent hosts $LND_ADDRESS | awk '{ print $1 }')
 LNDG_ADDRESS='lndg.embassy'
 LNDG_PASS=$(yq e '.password' /root/start9/config.yaml)
 
@@ -19,7 +20,11 @@ cp /mnt/lnd/*.macaroon /mnt/lnd/data/chain/bitcoin/mainnet
 echo
 echo "  Starting LNDg... "
 echo
-.venv/bin/pip install whitenoise tzdata && .venv/bin/python initialize.py -net 'mainnet' -server $LND_ADDRESS':10009' -d -dx -dir /mnt/lnd -ip $LAN_ADDRESS -p $LNDG_PASS --supervisord
+
+# while true; do { sleep 100; echo sleeping; } done
+
+pip install --upgrade protobuf >/dev/null
+pip install whitenoise tzdata && python initialize.py -net 'mainnet' -server $LND_IP':10009' -d -dx -dir /mnt/lnd -ip $LAN_ADDRESS -p $LNDG_PASS --supervisord
 echo "Modifying settings.py..."
 echo "CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
@@ -29,6 +34,20 @@ CSRF_TRUSTED_ORIGINS = ['https://"$LAN_ADDRESS"']
 " >> lndg/settings.py
 sed -i "s/ALLOWED_HOSTS = \[/&'"$TOR_ADDRESS"','"$LNDG_ADDRESS"',/" lndg/settings.py
 sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" gui/lnd_deps/lnd_connect.py
+# change the line below to only run if the django_filters module is not installed
+# sed -i "s/INSTALLED_APPS = \[/&'django_filters',/" lndg/settings.py
+# check the lndg/settings.py file to see if django_filters is already installed
+if grep -q "django_filters" lndg/settings.py; then 
+    echo "django_filters already installed"
+else
+    sed -i "s/INSTALLED_APPS = \[/&'django_filters',/" lndg/settings.py
+fi  
+# check the lndg/settings.py file to see if filter backends are already installed
+if grep -q "DEFAULT_FILTER_BACKENDS" lndg/settings.py; then
+    echo "DEFAULT_FILTER_BACKENDS already installed"
+else
+    sed -i "s/REST_FRAMEWORK = {/&'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),/" lndg/settings.py
+fi  
 
 # Properties Page showing password to be used for login
   echo 'version: 2' > /root/start9/stats.yaml
@@ -50,18 +69,20 @@ sed -i "s/+ '\/data\/chain\/bitcoin\/' + LND_NETWORK +/ + /" gui/lnd_deps/lnd_co
 
 # Starting all processes
 echo "Starting jobs.py..."
-.venv/bin/python jobs.py
+python jobs.py
 echo "Starting supervisord..."
-.venv/bin/supervisord -c /usr/local/etc/supervisord.conf
+supervisord -c /usr/local/etc/supervisord.conf
 echo "Starting manage.py..."
-.venv/bin/python manage.py runserver 0.0.0.0:8889 & 
+python manage.py runserver 0.0.0.0:8889 & 
 echo "Setting up Backend Data, Automated Rebalancing and HTLC Stream Data..."
-.venv/bin/python htlc_stream.py &
+python htlc_stream.py &
 while true;
-do .venv/bin/python jobs.py;
-.venv/bin/python rebalancer.py;
-sleep 10; 
+do python jobs.py;
+python rebalancer.py;
+sleep 210; 
 done 
+
+    
 
 echo "Shutting down service" &
 backend_process=$!

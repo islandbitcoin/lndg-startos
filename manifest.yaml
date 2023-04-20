@@ -1,8 +1,8 @@
 id: lndg
 title: LNDg
-version: 1.6.0
+version: 1.6.3
 release-notes: |
-  * Update to v1.6.0 [Release Notes](https://github.com/cryptosharks131/lndg/releases/tag/v1.6.0)
+  * Update to v1.6.3 [Release Notes](https://github.com/cryptosharks131/lndg/releases/tag/v1.6.3)
 license: mit
 wrapper-repo: "https://github.com/Start9Labs/lndg-wrapper"
 upstream-repo: "https://github.com/cryptosharks131/lndg"
@@ -67,7 +67,7 @@ interfaces:
       - http
 dependencies:
   lnd:
-    version: ">=0.11.1 <0.16.0"
+    version: ">=0.11.1 <0.17.0"
     description: Used to communicate with the Lightning Network.
     requirement:
       type: required

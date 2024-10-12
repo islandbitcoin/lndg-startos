@@ -1,11 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 _term() { 
   echo "Caught SIGTERM signal!" 
   kill -TERM "$backend_process" 2>/dev/null
-  kill -TERM "$jobs_process" 2>/dev/null
-  kill -TERM "$rebalancer_process" 2>/dev/null
 }
 
 TOR_ADDRESS=$(yq e '.tor-address' /root/start9/config.yaml)
@@ -22,8 +20,7 @@ echo
 echo "  Starting LNDg... "
 echo
 
-pip install --upgrade protobuf >/dev/null
-pip install whitenoise tzdata && python initialize.py -net 'mainnet' -server $LND_IP':10009' -d -dx -dir /mnt/lnd -ip $LAN_ADDRESS -p $LNDG_PASS --supervisord
+python initialize.py -net 'mainnet' -rpc $LND_IP':10009' -wn -dir /mnt/lnd -ip $LAN_ADDRESS -p $LNDG_PASS
 
 echo "Modifying settings.py..."
 echo "CORS_ALLOW_CREDENTIALS = True
@@ -61,31 +58,10 @@ echo '    copyable: true' >> /root/start9/stats.yaml
 echo '    masked: true' >> /root/start9/stats.yaml
 echo '    qr: false' >> /root/start9/stats.yaml
 
-echo "Starting supervisord..."
-supervisord -c /usr/local/etc/supervisord.conf
-
-echo "Starting manage.py..."
-python manage.py runserver 0.0.0.0:8889 & 
+echo "Starting backend..."
+python controller.py runserver 0.0.0.0:8889 & 
 backend_process=$!
 echo "Backend process PID: $backend_process"
-
-echo "Setting up Backend Data, Automated Rebalancing and HTLC Stream Data..."
-python htlc_stream.py &
-
-while true; do
-  python jobs.py &
-  jobs_process=$!
-  echo "Jobs process PID: $jobs_process"
-
-  python rebalancer.py &
-  rebalancer_process=$!
-  echo "Rebalancer process PID: $rebalancer_process"
-
-  sleep 210
-  
-  wait $jobs_process
-  wait $rebalancer_process
-done
 
 trap _term SIGTERM
 wait $backend_process

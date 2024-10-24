@@ -1,16 +1,15 @@
-FROM ghcr.io/cryptosharks131/lndg:v1.8.0
+FROM ghcr.io/cryptosharks131/lndg:v1.9.0
 
 # arm64 or amd64
 ARG PLATFORM
-ARG ARCH
+ARG YQ_VERSION
+ARG YQ_SHA
 
-RUN apt-get update -y \
-  && apt-get upgrade -y\
-  && apt-get install -y \
-  wget curl tini \
-  && wget https://github.com/mikefarah/yq/releases/download/v4.6.3/yq_linux_${PLATFORM}.tar.gz -O - |\
-  tar xz && mv yq_linux_${PLATFORM} /usr/bin/yq && chmod +x /usr/bin/yq 
+RUN \
+  # install yq
+  wget -qO /tmp/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${PLATFORM} && \
+  echo "${YQ_SHA} /tmp/yq" | sha256sum -c || exit 1 && \ 
+  mv /tmp/yq /usr/local/bin/yq && chmod +x /usr/local/bin/yq
 
 ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
 RUN chmod a+x /usr/local/bin/*.sh
-

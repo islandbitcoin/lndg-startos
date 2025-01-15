@@ -1,9 +1,8 @@
 id: lndg
 title: LNDg
-version: 1.9.0.1
+version: 1.9.1
 release-notes: |
-  * LNDg v1.9.0 [Release Notes](https://github.com/cryptosharks131/lndg/releases/tag/v1.9.0)
-  * fixed: wrong location of LNDg data directory caused settings to not stick
+  * LNDg v1.9.1 [Release Notes](https://github.com/cryptosharks131/lndg/releases/tag/v1.9.1)
 license: mit
 wrapper-repo: "https://github.com/islandbitcoin/lndg-startos"
 upstream-repo: "https://github.com/cryptosharks131/lndg"

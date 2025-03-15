@@ -1,6 +1,5 @@
 import { utils } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
-import { randomPassword } from '../utils'
 import { adminTxtFile } from '../file-helpers/lndg-admin.txt'
 
 export const resetPassword = sdk.Action.withoutInput(
@@ -8,25 +7,35 @@ export const resetPassword = sdk.Action.withoutInput(
   'reset-password',
 
   // metadata
-  async ({ effects }) => ({
-    name: 'Reset password',
-    description: 'Reset your LNDg password',
-    warning: null,
-    allowedStatuses: 'any',
-    group: null,
-    visibility: 'enabled',
-  }),
+  async ({ effects }) => {
+    const hasPass = await sdk.store
+      .getOwn(effects, sdk.StorePath.hasPass)
+      .const()
+    const desc = 'your LNDg password'
+
+    return {
+      name: hasPass ? 'Reset Password' : 'Create Password',
+      description: hasPass ? `Reset ${desc}` : `Create ${desc}`,
+      warning: null,
+      allowedStatuses: 'any',
+      group: null,
+      visibility: 'enabled',
+    }
+  },
 
   // the execution function
   async ({ effects }) => {
-    const password = utils.getDefaultString(randomPassword())
+    const password = utils.getDefaultString({
+      charset: 'a-z,A-Z,1-9,!,@,$,%,&,*',
+      len: 22,
+    })
 
-    await adminTxtFile.write(password)
+    await adminTxtFile.write(effects, password)
 
     return {
       version: '1',
       title: 'Success',
-      message: 'Your new password is below',
+      message: 'Your password is below. Your username is lndg-admin',
       result: {
         type: 'single',
         value: password,

@@ -14,7 +14,6 @@ export const manifest = setupManifest({
       'Web UI for LND developed specifically for LND Routing Node Operators',
     long: 'Powerful web interface to analyze lnd data and leverage the backend database for automation tools around rebalancing and other basic maintenance tasks.',
   },
-  assets: [],
   volumes: ['main', 'data'],
   images: {
     lndg: {

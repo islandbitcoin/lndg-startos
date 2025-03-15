@@ -4,9 +4,12 @@ import { setDependencies } from './dependencies'
 import { setInterfaces } from './interfaces'
 import { versions } from './versions'
 import { actions } from './actions'
+import { resetPassword } from './actions/resetPassword'
 
 // **** Install ****
-const install = sdk.setupInstall(async ({ effects }) => {})
+const install = sdk.setupInstall(async ({ effects }) => {
+  await sdk.action.requestOwn(effects, resetPassword, 'critical')
+})
 
 // **** Uninstall ****
 const uninstall = sdk.setupUninstall(async ({ effects }) => {})

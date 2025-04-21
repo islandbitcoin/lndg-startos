@@ -28,7 +28,22 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
    * Each daemon defines its own health check, which can optionally be exposed to the user.
    */
   return sdk.Daemons.of(effects, started, healthReceipts).addDaemon('primary', {
-    subcontainer: { imageId: 'lndg' },
+    subcontainer: await sdk.SubContainer.of(
+      effects,
+      { imageId: 'lndg' },
+      sdk.Mounts.of()
+        .addVolume('main', null, '/root', false)
+        .addVolume('data', null, '/app/data', false)
+        // @TODO watch the macaroon and restart if changes
+        .addDependency(
+          'lnd',
+          'main',
+          '/mnt/lnd/',
+          '/app/data/mnt/lnd/data/chain/bitcoin/mainnet',
+          true,
+        ),
+      'lndg-sub',
+    ),
     command: [
       'initialize.py',
       '-net',
@@ -45,17 +60,6 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
       '/var/log/lndg-controller.log',
       '1>&1',
     ],
-    mounts: sdk.Mounts.of()
-      .addVolume('main', null, '/root', false)
-      .addVolume('data', null, '/app/data', false)
-      // @TODO watch the macaroon and restart if changes
-      .addDependency(
-        'lnd',
-        'main',
-        '/mnt/lnd/',
-        '/app/data/mnt/lnd/data/chain/bitcoin/mainnet',
-        true,
-      ),
     ready: {
       display: 'Web Interface',
       fn: () =>

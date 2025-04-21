@@ -4,4 +4,8 @@ export type Store = {
   hasPass: boolean
 }
 
+export const initStore: Store = {
+  hasPass: false,
+}
+
 export const exposedStore = setupExposeStore<Store>(() => [])

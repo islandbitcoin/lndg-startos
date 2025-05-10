@@ -32,16 +32,26 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
       effects,
       { imageId: 'lndg' },
       sdk.Mounts.of()
-        .addVolume('main', null, '/root', false)
-        .addVolume('data', null, '/app/data', false)
+        .mountVolume({
+          volumeId: 'main',
+          subpath: null,
+          mountpoint: '/root',
+          readonly: false,
+        })
+        .mountVolume({
+          volumeId: 'data',
+          subpath: null,
+          mountpoint: '/app/data',
+          readonly: false,
+        })
         // @TODO watch the macaroon and restart if changes
-        .addDependency(
-          'lnd',
-          'main',
-          '/mnt/lnd/',
-          '/app/data/mnt/lnd/data/chain/bitcoin/mainnet',
-          true,
-        ),
+        .mountDependency({
+          dependencyId: 'lnd',
+          volumeId: 'main',
+          subpath: '/mnt/lnd/',
+          mountpoint: '/app/data/mnt/lnd/data/chain/bitcoin/mainnet',
+          readonly: true,
+        }),
       'lndg-sub',
     ),
     command: [

@@ -1,7 +1,6 @@
 import { utils } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
-import { adminTxtFile } from '../file-helpers/lndg-admin.txt'
-import { store } from '../file-helpers/store.json'
+import { adminTxtFile } from '../fileHelpers/lndg-admin.txt'
 
 export const resetPassword = sdk.Action.withoutInput(
   // id
@@ -9,7 +8,7 @@ export const resetPassword = sdk.Action.withoutInput(
 
   // metadata
   async ({ effects }) => {
-    const hasPass = await store.read((s) => s.hasPass).const(effects)
+    const hasPass = await adminTxtFile.read().const(effects)
     const desc = 'your LNDg password'
 
     return {

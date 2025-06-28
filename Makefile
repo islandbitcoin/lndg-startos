@@ -39,7 +39,7 @@ clean:
 	rm -f instructions.md
 
 scripts/embassy.js: $(TS_FILES)
-	deno bundle scripts/embassy.ts scripts/embassy.js
+	deno run --allow-read --allow-write --allow-env --allow-net scripts/bundle.ts
 
 docker-images/x86_64.tar: manifest.yaml Dockerfile docker_entrypoint.sh
 ifeq ($(ARCH),aarch64)
@@ -72,6 +72,3 @@ else
 	@echo "start-sdk: Preparing Universal Package ..."
 endif
 	@start-sdk pack
-	
-instructions.md: docs/instructions.md $(DOC_ASSETS)
-	cd docs && md-packer < instructions.md > ../instructions.md

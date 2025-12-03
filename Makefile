@@ -2,10 +2,10 @@ PKG_ID := $(shell yq e ".id" manifest.yaml)
 PKG_VERSION := $(shell yq e ".version" manifest.yaml)
 TS_FILES := $(shell find ./ -name \*.ts)
 DOC_ASSETS := $(shell find ./docs/assets)
-# sha256 hashes can be found in https://github.com/mikefarah/yq/releases/download/v4.40.7/checksums-bsd
-YQ_VERSION := 4.40.7
-YQ_SHA_AMD64 := 4f13ee9303a49f7e8f61e7d9c87402e07cc920ae8dfaaa8c10d7ea1b8f9f48ed
-YQ_SHA_ARM64 := a84f2c8f105b70cd348c3bf14048aeb1665c2e7314cbe9aaff15479f268b8412
+# sha256 hashes can be found in https://github.com/mikefarah/yq/releases/download/v4.49.2/checksums-bsd
+YQ_VERSION := 4.49.2
+YQ_SHA_AMD64 := be2c0ddcf426b6a231648610ec5d1666ae50e9f6473e82f6486f9f4cb6e3e2f7
+YQ_SHA_ARM64 := 783aa3c3beedcf2bf4aaf6262eca38b92a16d3ea31e2218ca80ba8ec7226b248
 
 # delete the target of a rule if it has changed and its recipe exits with a nonzero exit status
 .DELETE_ON_ERROR:
@@ -36,7 +36,6 @@ clean:
 	rm -f image.tar
 	rm -f $(PKG_ID).s9pk
 	rm -f scripts/*.js
-	rm -f instructions.md
 
 scripts/embassy.js: $(TS_FILES)
 	deno run --allow-read --allow-write --allow-env --allow-net scripts/bundle.ts

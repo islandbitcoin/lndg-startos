@@ -1,4 +1,4 @@
-FROM ghcr.io/cryptosharks131/lndg:v1.9.1
+FROM ghcr.io/cryptosharks131/lndg:v1.10.1
 
 # arm64 or amd64
 ARG PLATFORM
